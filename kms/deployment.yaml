@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kms
+  annotations:
+    ves.io/virtual-sites: kurentotest/vsite1
+    ves.io/workload-flavor: ves-io-large
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kms
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kms
+    spec:
+      containers:
+      - name: kms
+        image: kurento/kurento-media-server:latest
+        env:
+          - name: KMS_MIN_PORT
+            value: "30160"
+          - name: KMS_MAX_PORT
+            value: "30161"
+#            value: "30165"
+          - name: KMS_EXTERNAL_IPV4 #TURN/STUNを使用しない場合に記載する
+            value: 3.114.162.143 # パブリックIPアドレス
+        ports:
+        - containerPort: 8888
