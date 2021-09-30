@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kurent-platedetector
+  annotations:
+    ves.io/virtual-sites: kurentotest/vsite1
+    ves.io/workload-flavor: ves-io-large
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kurent-platedetector
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kurent-platedetector
+    spec:
+      containers:
+      - name: kurent-platedetector
+        image: niitsusanai/platedetector
+        imagePullPolicy: Always
+        env:
+          - name: JAVA_TOOL_OPTIONS
+            value: -Dkms.url=ws://kms.kurentotest:8888/kurento
+        ports:
+        - containerPort: 8443
